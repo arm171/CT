@@ -1,54 +1,51 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <cctype>
 
-class RLE {
+class RunLengthEncoding {
 public:
-    
-    std::string encode(const std::string& input) {
-        std::ostringstream encoded;
-        int count = 1;
+    std::string compress(const std::string& data) {
+        std::ostringstream result;
+        int counter = 1;
 
-        for (size_t i = 0; i < input.length(); ++i) {
-            if (i == input.length() - 1 || input[i] != input[i + 1]) {
-                encoded << input[i] << static_cast<char>(count);
-                count = 1; 
+        for (size_t i = 0; i < data.length(); ++i) {
+            if (i == data.length() - 1 || data[i] != data[i + 1]) {
+                result << data[i] << static_cast<char>(counter);
+                counter = 1;
             } else {
-                ++count; 
+                ++counter;
             }
         }
 
-        return encoded.str();
+        return result.str();
     }
 
-    std::string decode(const std::string& input) {
-        std::ostringstream decoded;
-        for (size_t i = 0; i < input.length(); ++i) {
-            char ch = input[i];
-            ++i;
+    std::string decompress(const std::string& data) {
+        std::ostringstream result;
 
-            
-            int count = static_cast<int>(input[i]); 
-            decoded << std::string(count, ch);
+        for (size_t i = 0; i < data.length(); ++i) {
+            char character = data[i];
+            ++i;
+            int frequency = static_cast<int>(data[i]);
+            result << std::string(frequency, character);
         }
 
-        return decoded.str();
+        return result.str();
     }
 };
 
 int main() {
-    RLE rle;
-    std::string input;
+    RunLengthEncoding rle;
+    std::string userInput;
 
-    std::cout << "Enter a string to encode: ";
-    std::getline(std::cin, input);
+    std::cout << "Enter text to compress: ";
+    std::getline(std::cin, userInput);
 
-    std::string encoded = rle.encode(input);
-    std::cout << "Encoded string: " << encoded << std::endl;
+    std::string compressed = rle.compress(userInput);
+    std::cout << "Compressed text: " << compressed << std::endl;
 
-    std::string decoded = rle.decode(encoded);
-    std::cout << "Decoded string: " << decoded << std::endl;
+    std::string decompressed = rle.decompress(compressed);
+    std::cout << "Decompressed text: " << decompressed << std::endl;
 
     return 0;
 }
