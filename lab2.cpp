@@ -1,42 +1,40 @@
 #include <iostream>
 #include <string>
 
-class TextModifier {
+class TextTransformer {
 private:
-    const std::string original = "abcdefghijklmnopqrstuvwxyz";
-    const std::string substitute = "mnopqrstuvwxyzabcdefghijkl";
+    const std::string base = "abcdefghijklmnopqrstuvwxyz";
+    const std::string shifted = "mnopqrstuvwxyzabcdefghijkl";
 
 public:
-    std::string modifyText(const std::string& inputText) {
-        std::string modifiedText = "";
+    std::string transform(const std::string& text) {
+        std::string result;
+        result.reserve(text.size());  
 
-        for (char ch : inputText) {
-            bool found = false;
-            for (size_t i = 0; i < original.size(); ++i) {
-                if (ch == original[i]) {
-                    modifiedText += substitute[i];
-                    found = true;
-                    break;
-                }
+        for (char symbol : text) {
+            size_t pos = base.find(symbol);
+            if (pos != std::string::npos) {
+                result += shifted[pos];
             }
-            if (!found) {
-                modifiedText += ch; // Keep the character if not found
+            else {
+                result += symbol;
             }
         }
-        return modifiedText;
+
+        return result;
     }
 };
 
 int main() {
-    TextModifier textModifier;
-    std::string inputText;
+    TextTransformer transformer;
+    std::string userInput;
 
-    std::cout << "Enter your text (lowercase letters only): ";
-    std::getline(std::cin, inputText);
+    std::cout << "Enter your text (lowercase only): ";
+    std::getline(std::cin, userInput);
 
-    std::string modifiedText = textModifier.modifyText(inputText);
+    std::string output = transformer.transform(userInput);
 
-    std::cout << "Modified text: " << modifiedText << std::endl;
+    std::cout << "Transformed text: " << output << std::endl;
 
     return 0;
 }
