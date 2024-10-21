@@ -4,94 +4,73 @@
 
 using namespace std;
 
-class TranspositionCipher {
-private:
-    int numCols;  
+class ColumnarCipher {
+    int columns;
 
-    
-    vector<vector<char>> createGrid(const string& message, int& numRows) {
-        numRows = (message.size() + numCols - 1) / numCols;  
+    vector<vector<char>> generateGrid(const string& text, int& rows) {
+        rows = (text.size() + columns - 1) / columns;
 
-        
-        vector<vector<char>> grid(numRows, vector<char>(numCols, ' '));
-
-        
-        int idx = 0;
-        for (int row = 0; row < numRows; row++) {
-            for (int col = 0; col < numCols && idx < message.size(); col++) {
-                grid[row][col] = message[idx++];
+        vector<vector<char>> grid(rows, vector<char>(columns, ' '));
+        int index = 0;
+        for (int r = 0; r < rows; ++r) {
+            for (int c = 0; c < columns && index < text.size(); ++c) {
+                grid[r][c] = text[index++];
             }
         }
         return grid;
     }
 
 public:
-   
-    TranspositionCipher(int columns) : numCols(columns) {}
+    explicit ColumnarCipher(int cols) : columns(cols) {}
 
-    
-    string encrypt(const string& message) {
-        int numRows;
-        vector<vector<char>> grid = createGrid(message, numRows);
-
-        
-        string encryptedMessage;
-        for (int col = 0; col < numCols; col++) {
-            for (int row = 0; row < numRows; row++) {
-                if (grid[row][col] != ' ') {
-                    encryptedMessage += grid[row][col];
-                }
+    string encode(const string& text) {
+        int rows;
+        vector<vector<char>> grid = generateGrid(text, rows);
+        string result;
+        for (int c = 0; c < columns; ++c) {
+            for (int r = 0; r < rows; ++r) {
+                if (grid[r][c] != ' ') result += grid[r][c];
             }
         }
-        return encryptedMessage;
+        return result;
     }
 
-    
-    string decrypt(const string& encryptedMessage) {
-        int numRows;
-        vector<vector<char>> grid = createGrid(encryptedMessage, numRows);
-
-       
-        int idx = 0;
-        for (int col = 0; col < numCols; col++) {
-            for (int row = 0; row < numRows && idx < encryptedMessage.size(); row++) {
-                grid[row][col] = encryptedMessage[idx++];
+    string decode(const string& encodedText) {
+        int rows;
+        vector<vector<char>> grid = generateGrid(encodedText, rows);
+        int index = 0;
+        for (int c = 0; c < columns; ++c) {
+            for (int r = 0; r < rows && index < encodedText.size(); ++r) {
+                grid[r][c] = encodedText[index++];
             }
         }
-
-        
-        string decryptedMessage;
-        for (int row = 0; row < numRows; row++) {
-            for (int col = 0; col < numCols; col++) {
-                if (grid[row][col] != ' ') {
-                    decryptedMessage += grid[row][col];
-                }
+        string result;
+        for (int r = 0; r < rows; ++r) {
+            for (int c = 0; c < columns; ++c) {
+                if (grid[r][c] != ' ') result += grid[r][c];
             }
         }
-        return decryptedMessage;
+        return result;
     }
 };
 
 int main() {
-    string message;
-    int numCols;
+    string inputText;
+    int colCount;
 
-    cout << "Enter the message to encrypt: ";
-    getline(cin, message);
+    cout << "Enter the text to encode: ";
+    getline(cin, inputText);
 
-    cout << "Enter the number of columns for the grid: ";
-    cin >> numCols;
+    cout << "Enter number of columns: ";
+    cin >> colCount;
 
-    
-    TranspositionCipher cipher(numCols);
+    ColumnarCipher cipher(colCount);
 
-   
-    string encryptedMessage = cipher.encrypt(message);
-    cout << "Encrypted Message: " << encryptedMessage << endl;
+    string encodedText = cipher.encode(inputText);
+    cout << "Encoded Message: " << encodedText << endl;
 
-    
-    string decryptedMessage = cipher.decrypt(encryptedMessage);
-    cout << "Decrypted Message: " << decryptedMessage << endl;
+    string decodedText = cipher.decode(encodedText);
+    cout << "Decoded Message: " << decodedText << endl;
 
     return 0;
 }
