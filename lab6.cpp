@@ -1,42 +1,43 @@
 #include <iostream>
 #include <vector>
 
-int findMissingNumber(const std::vector<int>& numbers, int n) {
-   
-    int expectedSum = n * (n + 1) / 2;
+int findMissing(const std::vector<int>& nums, int limit) {
+    
+    int totalSum = limit * (limit + 1) / 2;
 
-    int actualSum = 0;
-    for (int number : numbers) {
-        actualSum += number;
+    
+    int sum = 0;
+    for (int num : nums) {
+        sum += num;
     }
 
     
-    return expectedSum - actualSum;
+    return totalSum - sum;
 }
 
 int main() {
-    int n;
-    std::cout << "Enter the upper limit: ";
-    std::cin >> n;
+    int limit;
+    std::cout << "Enter the maximum number: ";
+    std::cin >> limit;
 
-    std::vector<int> numbers;
-    std::cout << "Enter " << (n - 1) << " numbers in the interval (1 to " << n << "), separated by spaces:\n";
+    std::vector<int> nums;
+    std::cout << "Enter " << (limit - 1) << " numbers between 1 and " << limit << ":\n";
     
-    for (int i = 0; i < n - 1; ) { 
-        int number;
-        std::cin >> number;
+    for (int i = 0; i < limit - 1; ) { 
+        int num;
+        std::cin >> num;
 
         
-        if (number < 1 || number > n) {
-            std::cout << "The number " << number << " doesn't belong to the interval. Please enter only numbers between 1 and " << n << ".\n";
+        if (num < 1 || num > limit) {
+            std::cout << "Invalid input: " << num << ". Please enter a number within the range (1-" << limit << ").\n";
         } else {
-            numbers.push_back(number);
+            nums.push_back(num);
             i++; 
         }
     }
 
-    int missingNumber = findMissingNumber(numbers, n);
-    std::cout << "The missing number is: " << missingNumber << std::endl;
+    int missing = findMissing(nums, limit);
+    std::cout << "The missing number is: " << missing << std::endl;
 
     return 0;
 }
